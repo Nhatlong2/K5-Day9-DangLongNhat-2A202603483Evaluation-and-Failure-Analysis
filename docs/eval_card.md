@@ -22,3 +22,22 @@ Cả ba report ghi 0 approval bypass và 0 secret leak. `seeded_regression` trư
 - **Tăng version eval set** Tăng version và sinh baseline mới khi thêm item, sửa nhãn hoặc đổi nguồn fixture.
 
 [Baseline v1](../src/reports/baseline_v1.json) · [Fixed](../src/reports/eval_fixed.json) · [Seeded regression](../src/reports/eval_seeded_regression.json) · [Spec v1](../src/config/metric_spec.yaml)
+
+## v2 · Advanced và Expert
+
+- **Snapshot baseline và gate** `71569db8da3761e2d1122d24538b3b487489fea3`. Run `E-swarm-20261117-fecc`, eval-set SHA `fecc094a9301`, metric spec `2.0`.
+- **Tập đánh giá** 28 item × 5 seed, gồm 14 ca v1 và 14 ca phân nhóm giả lập trong pack công khai. Từng FM được pack kiểm tra có 3–6 item sau khi ghép tập.
+- **A/A** Swarm trên seed `11,22,33,44,55` và `66,77,88,99,110` cho Δ 0,0000 ở mọi metric. Hai lượt đều có pass rate 0,9786, `pass_at_5` 1,0000 và `pass_hat_5` 0,8929.
+- **Sàn lặp lại** `pass_hat_5` ≥0,80 và chặn merge. Mốc này thấp hơn baseline ở cả hai lượt A/A. `flaky_regression` đạt `pass_at_5` 1,0000 nhưng chỉ đạt `pass_hat_5` 0,5714.
+
+| Slice | Pass rate baseline | Bằng chứng gate |
+|---|---:|---|
+| `money_movement` | 1,0000 | `slice_regression` đạt 0,8500 dưới sàn 0,90. Pass rate toàn tập là 0,9357 với CI của Δ [−0,121, +0,029]. Gate chặn riêng slice này. |
+| `adversarial` | 0,9714 | `seeded_regression` đạt 0,5714, CI của Δ [−0,657, −0,143]. Slice chặn cùng các metric toàn tập. |
+| `denial` | 0,9455 | `seeded_regression` đạt 0,3636, CI của Δ [−0,836, −0,309]. |
+
+Scorecard chặn 3/3 regression, báo nhầm 0. `fixed`, `honest_refactor` và baseline tự so đều qua. Bốn trap công khai đều trả exit 1 với verdict `integrity`. Kiểm tra bổ sung xác nhận gate chặn dòng lặp giữ nguyên tổng số dòng, lỗi evaluator trên report còn lại hợp lệ, đổi nhãn slice và bỏ điều kiện blocking cho cùng eval-set version.
+
+Với xác suất lỗi 1/3 trên một item và giả thiết các lần độc lập, 5 lần vẫn có khoảng 13% xác suất chưa quan sát lỗi. Hai bộ seed MockLLM có Δ 0 nên phép A/A này chỉ mô tả độ lặp lại của lab. Dùng dữ liệu và seed mới để ước lượng nhiễu trước khi áp sàn cho hệ thống dùng model thật.
+
+[Baseline v2](../src/reports/baseline_v2.json) · [Spec v2](../src/config/metric_spec_v2.yaml)
