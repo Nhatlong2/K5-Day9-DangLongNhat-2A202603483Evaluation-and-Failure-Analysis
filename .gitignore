@@ -1,5 +1,12 @@
 __pycache__/
 *.pyc
+.venv/
+.pytest_cache/
+.env
+.env.*
+!.env.example
 src/reports/
 src/traces/
 *.sqlite
+*.sqlite-*
+src/eval/instructor/
